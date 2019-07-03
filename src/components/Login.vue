@@ -5,6 +5,7 @@
       :error-messages="emailErrors"
       label="E-mail"
       required
+      ref="input"
       @input="$v.email.$touch()"
       @blur="$v.email.$touch()"
     ></v-text-field>
@@ -14,6 +15,7 @@
       :append-icon="show ? 'visibility' : 'visibility_off'"
       :type="show ? 'text' : 'password'"
       label="Password"
+      ref="password"
       required
       loading
       @click:append="show = !show"
@@ -30,12 +32,15 @@
     </v-text-field>
 
     <v-btn large @click="submit">submit</v-btn>
+    Output: {{ output }}
   </form>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate';
 import { required, email, minLength } from 'vuelidate/lib/validators';
+
+import api from '../api';
 
 export default {
   mixins: [validationMixin],
@@ -50,7 +55,7 @@ export default {
     email: '',
     show: false,
     password: '',
-    value: '',
+    output: '',
   }),
 
   computed: {
@@ -82,6 +87,14 @@ export default {
   methods: {
     submit() {
       this.$v.$touch();
+      this.output = {
+        email: this.$refs.input.value,
+        password: this.$refs.password.value,
+      };
+      api.postAuth(this.output)
+        .then((response) => {
+          this.output = response;
+        });
     },
   },
 };
