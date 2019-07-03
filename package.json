@@ -10,9 +10,11 @@
     "unit": "jest --config test/unit/jest.conf.js --coverage",
     "test": "npm run unit",
     "lint": "eslint --ext .js,.vue src test/unit",
+    "stylelint": "stylelint ./src/styles",
     "build": "node build/build.js"
   },
   "dependencies": {
+    "stylelint": "^10.1.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuetify": "^1.5.16"
