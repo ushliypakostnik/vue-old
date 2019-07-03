@@ -1,15 +1,6 @@
 <template>
   <form>
     <v-text-field
-      v-model="name"
-      :error-messages="nameErrors"
-      :counter="10"
-      label="Name"
-      required
-      @input="$v.name.$touch()"
-      @blur="$v.name.$touch()"
-    ></v-text-field>
-    <v-text-field
       v-model="email"
       :error-messages="emailErrors"
       label="E-mail"
@@ -17,80 +8,52 @@
       @input="$v.email.$touch()"
       @blur="$v.email.$touch()"
     ></v-text-field>
-    <v-select
-      v-model="select"
-      :items="items"
-      :error-messages="selectErrors"
-      label="Item"
+    <v-text-field
+      v-model="password"
+      :error-messages="passwordErrors"
+      :append-icon="show ? 'visibility' : 'visibility_off'"
+      :type="show ? 'text' : 'password'"
+      label="Password"
       required
-      @change="$v.select.$touch()"
-      @blur="$v.select.$touch()"
-    ></v-select>
-    <v-checkbox
-      v-model="checkbox"
-      :error-messages="checkboxErrors"
-      label="Do you agree?"
-      required
-      @change="$v.checkbox.$touch()"
-      @blur="$v.checkbox.$touch()"
-    ></v-checkbox>
+      loading
+      @click:append="show = !show"
+      @input="$v.password.$touch()"
+      @blur="$v.password.$touch()"
+    >
+      <template v-slot:progress>
+        <v-progress-linear
+          :password="progress"
+          :color="color"
+          height="7"
+        ></v-progress-linear>
+      </template>
+    </v-text-field>
 
-    <v-btn @click="submit">submit</v-btn>
-    <v-btn @click="clear">clear</v-btn>
+    <v-btn large @click="submit">submit</v-btn>
   </form>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate';
-import { required, maxLength, email } from 'vuelidate/lib/validators';
+import { required, email, minLength } from 'vuelidate/lib/validators';
 
 export default {
   mixins: [validationMixin],
 
   validations: {
-    name: { required, maxLength: maxLength(10) },
     email: { required, email },
-    select: { required },
-    checkbox: {
-      checked(val) {
-        return val;
-      },
-    },
+    password: { required, minLength: minLength(6) },
   },
 
   data: () => ({
     name: '',
     email: '',
-    select: null,
-    items: [
-      'Item 1',
-      'Item 2',
-      'Item 3',
-      'Item 4',
-    ],
-    checkbox: false,
+    show: false,
+    password: '',
+    value: '',
   }),
 
   computed: {
-    checkboxErrors() {
-      const errors = [];
-      if (!this.$v.checkbox.$dirty) return errors;
-      !this.$v.checkbox.checked && errors.push('You must agree to continue!'); // eslint-disable-line
-      return errors;
-    },
-    selectErrors() {
-      const errors = [];
-      if (!this.$v.select.$dirty) return errors;
-      !this.$v.select.required && errors.push('Item is required'); // eslint-disable-line
-      return errors;
-    },
-    nameErrors() {
-      const errors = [];
-      if (!this.$v.name.$dirty) return errors;
-      !this.$v.name.maxLength && errors.push('Name must be at most 10 characters long'); // eslint-disable-line
-      !this.$v.name.required && errors.push('Name is required.'); // eslint-disable-line
-      return errors;
-    },
     emailErrors() {
       const errors = [];
       if (!this.$v.email.$dirty) return errors;
@@ -98,18 +61,27 @@ export default {
       !this.$v.email.required && errors.push('E-mail is required'); // eslint-disable-line
       return errors;
     },
+
+    passwordErrors() {
+      const errors = [];
+      if (!this.$v.password.$dirty) return errors;
+      !this.$v.password.required && errors.push('Password is required'); // eslint-disable-line
+      !this.$v.password.minLength && errors.push('Password must be more than 5 characters'); // eslint-disable-line
+      return errors;
+    },
+
+    progress() {
+      return Math.min(100, this.password.length * 10);
+    },
+    color() {
+      return ['error', 'warning', 'success'][Math.floor(this.progress / 40)];
+    },
+
   },
 
   methods: {
     submit() {
       this.$v.$touch();
-    },
-    clear() {
-      this.$v.$reset();
-      this.name = '';
-      this.email = '';
-      this.select = null;
-      this.checkbox = false;
     },
   },
 };
