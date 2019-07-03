@@ -1,0 +1,32 @@
+.app {
+  text-align: center;
+
+  &__header {
+    color: $color_white;
+
+    @include xs {
+      font-size: 24px;
+    }
+  }
+}
+
+.container {
+  padding-top: 60px;
+  padding-bottom: 60px;
+
+  @media only screen {
+    max-width: 300px;
+  }
+}
+
+.theme--dark {
+  &.application {
+    background: $color_background_dark-theme;
+  }
+
+  &.v-card,
+  &.v-list {
+    background: $color_background_dark-theme;
+    border-color: $color_background_dark-theme;
+  }
+}
