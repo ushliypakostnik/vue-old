@@ -74,7 +74,7 @@ export default {
       return Math.min(100, this.password.length * 10);
     },
     color() {
-      return ['error', 'warning', 'success'][Math.floor(this.progress / 40)];
+      return ['error', 'warning', 'success'][Math.floor(this.progress / 30)];
     },
 
   },
