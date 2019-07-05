@@ -1,46 +1,46 @@
 <template>
-  <form>
-    <v-text-field
-      v-model="email"
-      :error-messages="emailErrors"
-      label="E-mail"
-      required
-      ref="input"
-      @input="$v.email.$touch()"
-      @blur="$v.email.$touch()"
-    ></v-text-field>
-    <v-text-field
-      v-model="password"
-      :error-messages="passwordErrors"
-      :append-icon="show ? 'visibility' : 'visibility_off'"
-      :type="show ? 'text' : 'password'"
-      label="Password"
-      ref="password"
-      required
-      loading
-      @click:append="show = !show"
-      @input="$v.password.$touch()"
-      @blur="$v.password.$touch()"
-    >
-      <template v-slot:progress>
-        <v-progress-linear
-          :password="progress"
-          :color="color"
-          height="7"
-        ></v-progress-linear>
-      </template>
-    </v-text-field>
+  <div>
+    <img src="../assets/logo.png" width="70px">
+    <h1 class="app__header">Vue cli based frontend boilerplate</h1>
+    <form @submit.prevent="login">
+      <v-text-field
+        v-model="email"
+        :error-messages="emailErrors"
+        label="E-mail"
+        required
+        ref="input"
+      ></v-text-field>
+      <v-text-field
+        v-model="password"
+        :error-messages="passwordErrors"
+        :append-icon="show ? 'visibility' : 'visibility_off'"
+        :type="show ? 'text' : 'password'"
+        label="Password"
+        ref="password"
+        required
+        loading
+        @click:append="show = !show"
+      >
+        <template v-slot:progress>
+          <v-progress-linear
+            :password="progress"
+            :color="color"
+            height="7"
+          ></v-progress-linear>
+        </template>
+      </v-text-field>
 
-    <v-btn large @click="submit">submit</v-btn>
-    Output: {{ output }}
-  </form>
+      <v-btn large type="submit">submit</v-btn>
+      Output: {{ output }}
+    </form>
+  </div>
 </template>
 
 <script>
 import { validationMixin } from 'vuelidate';
 import { required, email, minLength } from 'vuelidate/lib/validators';
 
-import api from '../api';
+import { AUTH_REQUEST } from '../store/actions/auth';
 
 export default {
   mixins: [validationMixin],
@@ -85,16 +85,14 @@ export default {
   },
 
   methods: {
-    submit() {
+    login() {
       this.$v.$touch();
       this.output = {
-        email: this.$refs.input.value,
+        usermail: this.$refs.input.value,
         password: this.$refs.password.value,
       };
-      api.postAuth(this.output)
-        .then((response) => {
-          this.output = response;
-        });
+      const { usermail, password } = this.output;
+      this.$store.dispatch(AUTH_REQUEST, { usermail, password });
     },
   },
 };

@@ -5,16 +5,19 @@ import Vuetify from 'vuetify';
 
 import App from './App';
 import router from './router';
+import store from './store';
 
 import 'vuetify/dist/vuetify.min.css'; // eslint-disable-line
 
 Vue.config.productionTip = false;
+
 Vue.use(Vuetify);
 
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
-  components: { App },
+  store,
   template: '<App/>',
+  components: { App },
 });
