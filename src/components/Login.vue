@@ -31,18 +31,20 @@
       </v-text-field>
 
       <v-btn large type="submit">submit</v-btn>
-      Output: {{ output }}
     </form>
   </div>
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 import { validationMixin } from 'vuelidate';
 import { required, email, minLength } from 'vuelidate/lib/validators';
 
 import { AUTH_REQUEST } from '../store/actions/auth';
 
 export default {
+  name: 'Login',
+
   mixins: [validationMixin],
 
   validations: {
@@ -53,17 +55,21 @@ export default {
   data: () => ({
     name: '',
     email: '',
-    show: false,
     password: '',
-    output: '',
+    show: false,
   }),
 
   computed: {
+    ...mapGetters(['authStatus']),
+
     emailErrors() {
       const errors = [];
       if (!this.$v.email.$dirty) return errors;
       !this.$v.email.email && errors.push('Must be valid e-mail'); // eslint-disable-line
       !this.$v.email.required && errors.push('E-mail is required'); // eslint-disable-line
+      if (this.authError !== '') {
+        errors.push(this.authError);
+      }
       return errors;
     },
 
@@ -72,6 +78,14 @@ export default {
       if (!this.$v.password.$dirty) return errors;
       !this.$v.password.required && errors.push('Password is required'); // eslint-disable-line
       !this.$v.password.minLength && errors.push('Password must be more than 5 characters'); // eslint-disable-line
+      return errors;
+    },
+
+    authError() {
+      const errors = [];
+      if (this.authStatus === 'error') {
+        errors.push('Authorization / registration failed');
+      }
       return errors;
     },
 
@@ -87,12 +101,12 @@ export default {
   methods: {
     login() {
       this.$v.$touch();
-      this.output = {
-        usermail: this.$refs.input.value,
-        password: this.$refs.password.value,
-      };
-      const { usermail, password } = this.output;
-      this.$store.dispatch(AUTH_REQUEST, { usermail, password });
+      const usermail = this.$refs.input.value;
+      const password = this.$refs.password.value;
+      // eslint-disable-next-line
+      if (!!!(this.emailErrors + this.passwordErrors)) {
+        this.$store.dispatch(AUTH_REQUEST, { usermail, password });
+      }
     },
   },
 };
