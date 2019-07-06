@@ -6,45 +6,49 @@ import {
   AUTH_ERROR,
   AUTH_SUCCESS,
   AUTH_LOGOUT,
+  SEND_VERIFY_EMAIL,
 } from '../actions/auth';
 
 import api from '../../api';
 
-const state = { token: localStorage.getItem('user-token') || '', status: '' };
+const state = { usermail: '', token: localStorage.getItem('user-token') || '', status: '' };
 
+/* eslint-disable no-shadow */
 const getters = {
-  isAuthenticated: state => !!state.token, // eslint-disable-line
-  authStatus: state => state.status, // eslint-disable-line
+  isAuthenticated: state => !!state.token,
+  authStatus: state => state.status,
+  usermail: state => state.usermail,
 };
+/* eslint-enable no-shadow */
 
 const actions = {
-  [AUTH_REQUEST]: ({ commit, dispatch }, user) => { // eslint-disable-line
-    return new Promise((resolve, reject) => { // eslint-disable-line
+  // eslint-disable-next-line arrow-body-style
+  [AUTH_REQUEST]: ({ commit }, user) => {
+    return new Promise((resolve, reject) => {
       commit(AUTH_REQUEST);
       api.postAuth(user)
         .then((response) => {
           const token = response.data.user.token;
           localStorage.setItem('user-token', token);
-          axios.defaults.headers.common['Authorization'] = token; // eslint-disable-line
+          // eslint-disable-next-line dot-notation
+          axios.defaults.headers.common['Authorization'] = token;
           commit(AUTH_SUCCESS, response);
           resolve(response);
         })
         .catch((err) => {
           commit(AUTH_ERROR, err);
           localStorage.removeItem('user-token');
-          delete axios.defaults.headers.common['Authorization']; // eslint-disable-line
+          // eslint-disable-next-line dot-notation
+          delete axios.defaults.headers.common['Authorization'];
           reject(err);
         });
     });
   },
-  [AUTH_LOGOUT]: ({ commit, dispatch }) => { // eslint-disable-line
+  [SEND_VERIFY_EMAIL]: (usermail) => {
     const token = state.token;
-    return new Promise((resolve, reject) => { // eslint-disable-line
-      commit(AUTH_LOGOUT);
-      api.getLogout(token)
+    return new Promise((resolve, reject) => {
+      api.getVerifyEmail(usermail, token)
         .then((response) => {
-          localStorage.removeItem('user-token');
-          delete axios.defaults.headers.common['Authorization']; // eslint-disable-line
           resolve(response);
         })
         .catch((err) => {
@@ -52,29 +56,50 @@ const actions = {
         });
     });
   },
-  [AUTH_ERROR]: ({ commit, dispatch }) => { // eslint-disable-line
-    return new Promise((resolve, reject) => { // eslint-disable-line
+  [AUTH_LOGOUT]: ({ commit }) => {
+    const token = state.token;
+    return new Promise((resolve, reject) => {
+      commit(AUTH_LOGOUT);
+      localStorage.removeItem('user-token');
+      // eslint-disable-next-line dot-notation
+      delete axios.defaults.headers.common['Authorization'];
+      api.getLogout(token)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
+  // eslint-disable-next-line arrow-body-style
+  [AUTH_ERROR]: ({ commit }) => {
+    return new Promise((resolve) => {
       commit(AUTH_ERROR);
       resolve();
     });
   },
 };
 
+/* eslint-disable no-shadow */
 const mutations = {
-  [AUTH_REQUEST]: (state) => { // eslint-disable-line
+  [AUTH_REQUEST]: (state) => {
     state.status = 'loading';
   },
-  [AUTH_SUCCESS]: (state, response) => { // eslint-disable-line
+  [AUTH_SUCCESS]: (state, response) => {
     state.status = 'success';
+    state.usermail = response.data.user.usermail;
     state.token = response.data.user.token;
   },
-  [AUTH_ERROR]: (state) => { // eslint-disable-line
+  [AUTH_ERROR]: (state) => {
     state.status = 'error';
   },
-  [AUTH_LOGOUT]: (state) => { // eslint-disable-line
+  [AUTH_LOGOUT]: (state) => {
+    state.usermail = '';
     state.token = '';
   },
 };
+/* eslint-enable no-shadow */
 
 export default {
   state,

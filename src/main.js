@@ -3,11 +3,11 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 
+import 'vuetify/dist/vuetify.min.css';
+
 import App from './App';
 import router from './router';
 import store from './store';
-
-import 'vuetify/dist/vuetify.min.css'; // eslint-disable-line
 
 Vue.config.productionTip = false;
 

@@ -9,11 +9,19 @@ if (token) {
 }
 
 export default ({
-  postAuth: auth =>
-    axios.post(`${API_URL}/api/user/login`, { user: auth }),
+  postAuth: user =>
+    axios.post(`${API_URL}/api/user/login`, { user }),
+
+  getVerifyEmail: (usermail, t) =>
+    axios.get(`${API_URL}/api/user/send-verify-email`, {
+      user: { usermail },
+      headers: { Authorization: `Token ${t}` },
+    }),
 
   getLogout: t =>
-    axios.get(`${API_URL}/api/user/logout`, { headers: { Authorization: `Token ${t}` } }),
+    axios.get(`${API_URL}/api/user/logout`, {
+      headers: { Authorization: `Token ${t}` },
+    }),
 
   getTest: () =>
     axios.get(`${API_URL}/test`),

@@ -78,6 +78,9 @@ export default {
       if (!this.$v.password.$dirty) return errors;
       !this.$v.password.required && errors.push('Password is required'); // eslint-disable-line
       !this.$v.password.minLength && errors.push('Password must be more than 5 characters'); // eslint-disable-line
+      if (this.authError !== '') {
+        errors.push(this.authError);
+      }
       return errors;
     },
 
