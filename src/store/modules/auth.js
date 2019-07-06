@@ -11,7 +11,11 @@ import {
 
 import api from '../../api';
 
-const state = { usermail: '', token: localStorage.getItem('user-token') || '', status: '' };
+const state = {
+  usermail: '',
+  status: '',
+  token: localStorage.getItem('user-token') || '',
+};
 
 /* eslint-disable no-shadow */
 const getters = {
