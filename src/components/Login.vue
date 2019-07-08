@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="login">
     <img src="../assets/logo.png" width="70px">
-    <h1 class="app__header">Vue cli based frontend boilerplate</h1>
-    <form @submit.prevent="login">
+    <h1 class="login__header">Vue cli based frontend boilerplate</h1>
+    <form @submit.prevent="submit">
       <v-text-field
         v-model="email"
         :error-messages="emailErrors || errors.message"
@@ -11,6 +11,7 @@
         ref="input"
       ></v-text-field>
       <v-text-field
+        v-if="login"
         v-model="password"
         :error-messages="passwordErrors || errors.message"
         :append-icon="show ? 'visibility' : 'visibility_off'"
@@ -30,13 +31,18 @@
         </template>
       </v-text-field>
 
-      <v-btn large type="submit">submit</v-btn>
+      <v-btn large type="submit">{{ !login ? "Remind Рassword" : "Login / Registration" }}</v-btn>
       <v-text-field
         class="message"
         :error-messages="errors.message"
         height="0"
         disabled
       ></v-text-field>
+      <a
+        href="#"
+        class="login__remind-password-link"
+        @click.prevent="login = !login"
+      >{{ login ? "Remind Рassword ?" : "Login / Registration" }}</a>
     </form>
   </div>
 </template>
@@ -46,7 +52,10 @@ import { mapGetters } from 'vuex';
 import { validationMixin } from 'vuelidate';
 import { required, email, minLength } from 'vuelidate/lib/validators';
 
-import { AUTH_REQUEST } from '../store/actions/auth';
+import {
+  AUTH_REQUEST,
+  REMIND_PASSWORD,
+} from '../store/actions/auth';
 
 export default {
   name: 'Login',
@@ -62,6 +71,7 @@ export default {
     email: '',
     password: '',
     show: false,
+    login: false,
   }),
 
   computed: {
@@ -93,18 +103,55 @@ export default {
   },
 
   methods: {
-    login() {
+    submit() {
+      console.log("Submit!!!!", this.login, this.emailErrors);
+
       this.$v.$touch();
       const usermail = this.$refs.input.value;
-      const password = this.$refs.password.value;
-      // eslint-disable-next-line
-      if (!!!(this.emailErrors + this.passwordErrors)) {
-        this.$store.dispatch(AUTH_REQUEST, { usermail, password });
+
+      if (this.login) {
+        const password = this.$refs.password.value;
+        // eslint-disable-next-line
+        if (!!!(this.emailErrors + this.passwordErrors)) {
+          this.$store.dispatch(AUTH_REQUEST, { usermail, password });
+        }
+      } else {
+        if (this.emailErrors != []) {
+          this.$store.dispatch(REMIND_PASSWORD, { usermail });
+        }
       }
     },
   },
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+@import '../styles/_stylebase.scss';
+
+.login {
+  text-align: center;
+
+  .container {
+    padding-top: 60px;
+    padding-bottom: 60px;
+
+    @media only screen {
+      max-width: 300px;
+    }
+  }
+
+  &__header {
+    font-size: 28px;
+    color: $color_white;
+
+    @include xs {
+      font-size: 24px;
+    }
+  }
+
+  &__remind-password-link {
+    display: inline-block;
+    margin-top: $size / 4;
+  }
+}
 </style>

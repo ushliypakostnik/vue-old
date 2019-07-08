@@ -4,6 +4,7 @@ import {
   AUTH_ERROR,
   AUTH_SUCCESS,
   AUTH_LOGOUT,
+  REMIND_PASSWORD,
 } from '../actions/auth';
 import { USER_REQUEST } from '../actions/user';
 
@@ -59,16 +60,32 @@ const actions = {
         });
     });
   },
+  [REMIND_PASSWORD]: ({ commit }, email) => {
+    console.log("AUTH [REMIND_PASSWORD]!!!", email);
+    return new Promise((resolve, reject) => {
+      commit(AUTH_REQUEST);
+      console.log("AUTH [REMIND_PASSWORD]!!!", email);
+      api.postRemindPassword(email)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((err) => {
+          reject(err);
+        });
+    });
+  },
 };
 
 /* eslint-disable no-shadow */
 const mutations = {
   [AUTH_REQUEST]: (state) => {
     state.status = 'loading';
+    state.errors = '';
   },
   [AUTH_SUCCESS]: (state, response) => {
     state.status = 'success';
     state.token = response.data.user.token;
+    state.errors = '';
   },
   [AUTH_ERROR]: (state, err) => {
     state.status = 'error';

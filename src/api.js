@@ -20,6 +20,11 @@ export default ({
       headers: { Authorization: `Token ${token}` },
     }),
 
+  postRemindPassword: usermail => {
+    console.log("AXIOS REMIND!!!!", usermail);
+    axios.post(`${API_URL}/api/user/remind`, { usermail });
+  },
+
   // User
 
   getUserProfile: token =>
