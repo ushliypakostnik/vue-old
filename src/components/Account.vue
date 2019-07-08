@@ -7,18 +7,17 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-
+import { AUTH_LOGOUT } from '../store/actions/auth';
 import {
-  AUTH_LOGOUT,
+  USER_REQUEST,
   SEND_VERIFY_EMAIL,
-} from '../store/actions/auth';
+} from '../store/actions/user';
 
 export default {
   name: 'Account',
 
-  computed: {
-    ...mapGetters(['usermail']),
+  beforeCreate() {
+    this.$store.dispatch(USER_REQUEST);
   },
 
   methods: {
@@ -26,8 +25,7 @@ export default {
       this.$store.dispatch(AUTH_LOGOUT);
     },
     send() {
-      const usermail = this.usermail;
-      this.$store.dispatch(SEND_VERIFY_EMAIL, usermail);
+      this.$store.dispatch(SEND_VERIFY_EMAIL);
     },
   },
 };

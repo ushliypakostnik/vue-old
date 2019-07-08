@@ -5,14 +5,14 @@
     <form @submit.prevent="login">
       <v-text-field
         v-model="email"
-        :error-messages="emailErrors"
+        :error-messages="emailErrors || errors.message"
         label="E-mail"
         required
         ref="input"
       ></v-text-field>
       <v-text-field
         v-model="password"
-        :error-messages="passwordErrors"
+        :error-messages="passwordErrors || errors.message"
         :append-icon="show ? 'visibility' : 'visibility_off'"
         :type="show ? 'text' : 'password'"
         label="Password"
@@ -31,6 +31,12 @@
       </v-text-field>
 
       <v-btn large type="submit">submit</v-btn>
+      <v-text-field
+        class="message"
+        :error-messages="errors.message"
+        height="0"
+        disabled
+      ></v-text-field>
     </form>
   </div>
 </template>
@@ -53,43 +59,28 @@ export default {
   },
 
   data: () => ({
-    name: '',
     email: '',
     password: '',
     show: false,
   }),
 
   computed: {
-    ...mapGetters(['authStatus']),
+    ...mapGetters(['errors']),
 
     emailErrors() {
-      const errors = [];
-      if (!this.$v.email.$dirty) return errors;
-      !this.$v.email.email && errors.push('Must be valid e-mail'); // eslint-disable-line
-      !this.$v.email.required && errors.push('E-mail is required'); // eslint-disable-line
-      if (this.authError !== '') {
-        errors.push(this.authError);
-      }
-      return errors;
+      const err = [];
+      if (!this.$v.email.$dirty) return err;
+      !this.$v.email.email && err.push('Must be valid e-mail'); // eslint-disable-line
+      !this.$v.email.required && err.push('E-mail is required'); // eslint-disable-line
+      return err;
     },
 
     passwordErrors() {
-      const errors = [];
-      if (!this.$v.password.$dirty) return errors;
-      !this.$v.password.required && errors.push('Password is required'); // eslint-disable-line
-      !this.$v.password.minLength && errors.push('Password must be more than 5 characters'); // eslint-disable-line
-      if (this.authError !== '') {
-        errors.push(this.authError);
-      }
-      return errors;
-    },
-
-    authError() {
-      const errors = [];
-      if (this.authStatus === 'error') {
-        errors.push('Authorization / registration failed');
-      }
-      return errors;
+      const err = [];
+      if (!this.$v.password.$dirty) return err;
+      !this.$v.password.required && err.push('Password is required'); // eslint-disable-line
+      !this.$v.password.minLength && err.push('Password must be more than 5 characters'); // eslint-disable-line
+      return err;
     },
 
     progress() {

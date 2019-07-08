@@ -1,61 +1,45 @@
 /* eslint-disable promise/param-names */
-import axios from 'axios';
-
 import {
   AUTH_REQUEST,
   AUTH_ERROR,
   AUTH_SUCCESS,
   AUTH_LOGOUT,
-  SEND_VERIFY_EMAIL,
 } from '../actions/auth';
+import { USER_REQUEST } from '../actions/user';
 
 import api from '../../api';
+import storage from '../../storage';
 
 const state = {
-  usermail: '',
   status: '',
   token: localStorage.getItem('user-token') || '',
+  errors: '',
 };
 
 /* eslint-disable no-shadow */
 const getters = {
   isAuthenticated: state => !!state.token,
   authStatus: state => state.status,
-  usermail: state => state.usermail,
+  errors: state => state.errors,
 };
 /* eslint-enable no-shadow */
 
 const actions = {
   // eslint-disable-next-line arrow-body-style
-  [AUTH_REQUEST]: ({ commit }, user) => {
+  [AUTH_REQUEST]: ({ commit, dispatch }, user) => {
     return new Promise((resolve, reject) => {
       commit(AUTH_REQUEST);
       api.postAuth(user)
         .then((response) => {
           const token = response.data.user.token;
-          localStorage.setItem('user-token', token);
-          // eslint-disable-next-line dot-notation
-          axios.defaults.headers.common['Authorization'] = token;
+          storage.setAuth(token);
           commit(AUTH_SUCCESS, response);
+          dispatch(USER_REQUEST);
           resolve(response);
         })
         .catch((err) => {
           commit(AUTH_ERROR, err);
-          localStorage.removeItem('user-token');
-          // eslint-disable-next-line dot-notation
-          delete axios.defaults.headers.common['Authorization'];
-          reject(err);
-        });
-    });
-  },
-  [SEND_VERIFY_EMAIL]: (usermail) => {
-    const token = state.token;
-    return new Promise((resolve, reject) => {
-      api.getVerifyEmail(usermail, token)
-        .then((response) => {
-          resolve(response);
-        })
-        .catch((err) => {
+          storage.deleteAuth();
           reject(err);
         });
     });
@@ -64,9 +48,8 @@ const actions = {
     const token = state.token;
     return new Promise((resolve, reject) => {
       commit(AUTH_LOGOUT);
-      localStorage.removeItem('user-token');
-      // eslint-disable-next-line dot-notation
-      delete axios.defaults.headers.common['Authorization'];
+      storage.deleteAuth();
+      storage.deleteUserProfile();
       api.getLogout(token)
         .then((response) => {
           resolve(response);
@@ -74,13 +57,6 @@ const actions = {
         .catch((err) => {
           reject(err);
         });
-    });
-  },
-  // eslint-disable-next-line arrow-body-style
-  [AUTH_ERROR]: ({ commit }) => {
-    return new Promise((resolve) => {
-      commit(AUTH_ERROR);
-      resolve();
     });
   },
 };
@@ -92,15 +68,15 @@ const mutations = {
   },
   [AUTH_SUCCESS]: (state, response) => {
     state.status = 'success';
-    state.usermail = response.data.user.usermail;
     state.token = response.data.user.token;
   },
-  [AUTH_ERROR]: (state) => {
+  [AUTH_ERROR]: (state, err) => {
     state.status = 'error';
+    state.errors = err.response.data.errors;
   },
   [AUTH_LOGOUT]: (state) => {
-    state.usermail = '';
     state.token = '';
+    state.errors = '';
   },
 };
 /* eslint-enable no-shadow */

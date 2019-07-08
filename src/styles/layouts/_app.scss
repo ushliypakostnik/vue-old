@@ -20,6 +20,8 @@
   }
 }
 
+// Vuetify
+
 button.v-btn {
   width: 100%;
   margin: $size 0 0 0;
@@ -34,5 +36,11 @@ button.v-btn {
   &.v-list {
     background: $color_background_dark-theme;
     border-color: $color_background_dark-theme;
+  }
+}
+
+.v-input[class*="message"] {
+  .v-input__slot {
+    display: none;
   }
 }
