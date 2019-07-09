@@ -11,7 +11,6 @@ export default ({
 
   getVerifyEmail: (usermail, token) =>
     axios.get(`${API_URL}/api/user/send-verify-email`, {
-      user: { usermail },
       headers: { Authorization: `Token ${token}` },
     }),
 
