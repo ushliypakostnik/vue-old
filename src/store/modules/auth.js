@@ -4,6 +4,7 @@ import {
   AUTH_ERROR,
   AUTH_SUCCESS,
   AUTH_LOGOUT,
+  SET_TOKEN,
   REMIND_PASSWORD,
 } from '../actions/auth';
 import { USER_REQUEST } from '../actions/user';
@@ -75,6 +76,10 @@ const actions = {
         });
     });
   },
+  [SET_TOKEN]: ({ commit }, token) => {
+    commit(SET_TOKEN, token);
+    storage.setAuth(token);
+  },
 };
 
 /* eslint-disable no-shadow */
@@ -95,6 +100,10 @@ const mutations = {
   [AUTH_LOGOUT]: (state) => {
     state.token = '';
     state.errors = '';
+  },
+  [SET_TOKEN]: (state, token) => {
+    state.status = 'success';
+    state.token = token;
   },
 };
 /* eslint-enable no-shadow */

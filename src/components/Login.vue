@@ -1,7 +1,6 @@
 <template>
   <div class="login">
-    <img src="../assets/logo.png" width="70px">
-    <h1 class="login__header">Vue cli based frontend boilerplate</h1>
+    <Logo />
     <form @submit.prevent="submit">
       <v-text-field
         v-model="email"
@@ -37,6 +36,7 @@
         :error-messages="errors.message"
         height="0"
         disabled
+        error
       ></v-text-field>
       <a
         href="#"
@@ -50,15 +50,25 @@
 <script>
 import { mapGetters } from 'vuex';
 import { validationMixin } from 'vuelidate';
-import { required, email, minLength } from 'vuelidate/lib/validators';
+import {
+  required,
+  email,
+  minLength
+} from 'vuelidate/lib/validators';
 
 import {
   AUTH_REQUEST,
   REMIND_PASSWORD,
 } from '../store/actions/auth';
 
+import Logo from './Logo';
+
 export default {
   name: 'Login',
+
+  components: {
+    Logo,
+  },
 
   mixins: [validationMixin],
 
@@ -133,15 +143,6 @@ export default {
 
     @media only screen {
       max-width: 300px;
-    }
-  }
-
-  &__header {
-    font-size: 28px;
-    color: $color_white;
-
-    @include xs {
-      font-size: 24px;
     }
   }
 
