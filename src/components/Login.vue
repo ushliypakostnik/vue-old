@@ -104,21 +104,17 @@ export default {
 
   methods: {
     submit() {
-      console.log("Submit!!!!", this.login, this.emailErrors);
-
       this.$v.$touch();
       const usermail = this.$refs.input.value;
 
       if (this.login) {
         const password = this.$refs.password.value;
         // eslint-disable-next-line
-        if (!!!(this.emailErrors + this.passwordErrors)) {
+        !!!(this.emailErrors + this.passwordErrors) &&
           this.$store.dispatch(AUTH_REQUEST, { usermail, password });
-        }
       } else {
-        if (this.emailErrors != []) {
-          this.$store.dispatch(REMIND_PASSWORD, { usermail });
-        }
+        // eslint-disable-next-line
+        this.emailErrors !== [] && this.$store.dispatch(REMIND_PASSWORD, { usermail });
       }
     },
   },

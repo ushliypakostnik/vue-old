@@ -60,11 +60,12 @@ const actions = {
         });
     });
   },
+  // eslint-disable-next-line arrow-body-style
   [REMIND_PASSWORD]: ({ commit }, email) => {
-    console.log("AUTH [REMIND_PASSWORD]!!!", email);
+    // console.log("AUTH [REMIND_PASSWORD]!!!", email);
     return new Promise((resolve, reject) => {
-      commit(AUTH_REQUEST);
-      console.log("AUTH [REMIND_PASSWORD]!!!", email);
+      commit(REMIND_PASSWORD);
+      // sconsole.log("AUTH [REMIND_PASSWORD]!!!", email);
       api.postRemindPassword(email)
         .then((response) => {
           resolve(response);

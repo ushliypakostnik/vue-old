@@ -47,10 +47,5 @@
 <script>
 export default {
   name: 'loading',
-  props: {},
-  components: {},
-  data() {
-    return {};
-  },
 };
 </script>
