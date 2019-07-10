@@ -60,8 +60,9 @@ import { mapGetters } from 'vuex';
 import { validationMixin } from 'vuelidate';
 import { required, minLength } from 'vuelidate/lib/validators';
 
-import {
-} from '../store/actions/auth';
+/* import {
+  SET_TOKEN,
+} from '../store/actions/auth'; */
 
 import Logo from './Logo';
 
@@ -86,17 +87,19 @@ export default {
     match: null,
   }),
 
-  beforeCreate() {
+  /* beforeCreate() {
     // console.log('Старт!', this.$route.params.query);
-    if (this.$route.params.query) {
-      console.log(this.$route.params.query.slice(0, 6));
-      if (this.$route.params.query.slice(0, 6) === 'token=') {
-        //this.$store.dispatch(SET_TOKEN, this.$route.params.query.slice(6));
-        //this.$route.params.query = ''
-        //this.$router.replace({ name: 'Home', query: ''});
+    if (this.$route.hash) {
+      console.log(this.$route.hash.slice(0, 7));
+      if (this.$route.hash.slice(0, 7) === '#token=') {
+        console.log("Да!");
+        const token = this.$route.hash.slice(7);
+        console.log(token);
+        this.$store.dispatch(SET_TOKEN, token);
+        this.$router.replace({ name: 'Home'});
       }
     }
-  },
+  }, */
 
   computed: {
     ...mapGetters(['errors']),

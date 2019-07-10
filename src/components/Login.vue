@@ -4,15 +4,16 @@
     <form @submit.prevent="submit">
       <v-text-field
         v-model="email"
-        :error-messages="emailErrors || errors.message"
+        :error-messages="emailErrors"
         label="E-mail"
         required
         ref="input"
+        @input="clear"
       ></v-text-field>
       <v-text-field
         v-if="login"
         v-model="password"
-        :error-messages="passwordErrors || errors.message"
+        :error-messages="passwordErrors"
         :append-icon="show ? 'visibility' : 'visibility_off'"
         :type="show ? 'text' : 'password'"
         label="Password"
@@ -20,6 +21,7 @@
         required
         loading
         @click:append="show = !show"
+        @input="clear"
       >
         <template v-slot:progress>
           <v-progress-linear
@@ -31,18 +33,29 @@
       </v-text-field>
 
       <v-btn large type="submit">{{ !login ? "Remind Рassword" : "Login / Registration" }}</v-btn>
+
+      <a
+        href="#"
+        class="login__remind-password-link"
+        @click.prevent="usercase"
+      >{{ login ? "Remind Рassword ?" : "Login / Registration" }}</a>
+
       <v-text-field
+        v-if="errors"
         class="message"
-        :error-messages="errors.message"
+        :error-messages="message1"
         height="0"
         disabled
         error
       ></v-text-field>
-      <a
-        href="#"
-        class="login__remind-password-link"
-        @click.prevent="login = !login"
-      >{{ login ? "Remind Рassword ?" : "Login / Registration" }}</a>
+      <v-text-field
+        v-if="success"
+        class="message"
+        :messages="message2"
+        height="0"
+        disabled
+        success
+      ></v-text-field>
     </form>
   </div>
 </template>
@@ -80,12 +93,14 @@ export default {
   data: () => ({
     email: '',
     password: '',
+    passerrors: false,
     show: false,
-    login: false,
+    login: true,
+    input: false,
   }),
 
   computed: {
-    ...mapGetters(['errors']),
+    ...mapGetters(['errors', 'success']),
 
     emailErrors() {
       const err = [];
@@ -100,7 +115,22 @@ export default {
       if (!this.$v.password.$dirty) return err;
       !this.$v.password.required && err.push('Password is required'); // eslint-disable-line
       !this.$v.password.minLength && err.push('Password must be more than 5 characters'); // eslint-disable-line
+      if (this.passerrors) { return null; }
       return err;
+    },
+
+    message1() {
+      if (!this.input) {
+        return this.errors.message;
+      }
+      return null;
+    },
+
+    message2() {
+      if (!this.input) {
+        return String(this.success);
+      }
+      return '';
     },
 
     progress() {
@@ -115,6 +145,7 @@ export default {
   methods: {
     submit() {
       this.$v.$touch();
+      this.input = false;
       const usermail = this.$refs.input.value;
 
       if (this.login) {
@@ -123,9 +154,21 @@ export default {
         !!!(this.emailErrors + this.passwordErrors) &&
           this.$store.dispatch(AUTH_REQUEST, { usermail, password });
       } else {
+        console.log(this.emailErrors.length === 0);
         // eslint-disable-next-line
-        this.emailErrors !== [] && this.$store.dispatch(REMIND_PASSWORD, { usermail });
+        this.emailErrors.length === 0 && this.$store.dispatch(REMIND_PASSWORD, usermail);
       }
+    },
+
+    usercase() {
+      this.login = !this.login;
+      this.clear();
+      this.passerrors = true;
+    },
+
+    clear() {
+      this.input = true;
+      this.passerrors = false;
     },
   },
 };
@@ -148,7 +191,7 @@ export default {
 
   &__remind-password-link {
     display: inline-block;
-    margin-top: $size / 4;
+    margin-top: $size;
   }
 }
 </style>

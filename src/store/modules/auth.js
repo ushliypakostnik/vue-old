@@ -6,6 +6,8 @@ import {
   AUTH_LOGOUT,
   SET_TOKEN,
   REMIND_PASSWORD,
+  REMIND_PASSWORD_SUCCESS,
+  REMIND_PASSWORD_ERROR,
 } from '../actions/auth';
 import { USER_REQUEST } from '../actions/user';
 
@@ -16,6 +18,7 @@ const state = {
   status: '',
   token: localStorage.getItem('user-token') || '',
   errors: '',
+  success: '',
 };
 
 /* eslint-disable no-shadow */
@@ -23,6 +26,7 @@ const getters = {
   isAuthenticated: state => !!state.token,
   authStatus: state => state.status,
   errors: state => state.errors,
+  success: state => state.success,
 };
 /* eslint-enable no-shadow */
 
@@ -62,16 +66,16 @@ const actions = {
     });
   },
   // eslint-disable-next-line arrow-body-style
-  [REMIND_PASSWORD]: ({ commit }, email) => {
-    // console.log("AUTH [REMIND_PASSWORD]!!!", email);
+  [REMIND_PASSWORD]: ({ commit, dispatch }, email) => {
     return new Promise((resolve, reject) => {
-      commit(REMIND_PASSWORD);
-      // sconsole.log("AUTH [REMIND_PASSWORD]!!!", email);
+      console.log(email);
       api.postRemindPassword(email)
         .then((response) => {
+          commit(REMIND_PASSWORD_SUCCESS, response);
           resolve(response);
         })
         .catch((err) => {
+          commit(REMIND_PASSWORD_ERROR, err);
           reject(err);
         });
     });
@@ -100,6 +104,14 @@ const mutations = {
   [AUTH_LOGOUT]: (state) => {
     state.token = '';
     state.errors = '';
+  },
+  [REMIND_PASSWORD_SUCCESS]: (state, response) => {
+    state.errors = '';
+    state.success = response.data.success.message;
+  },
+  [REMIND_PASSWORD_ERROR]: (state, err) => {
+    state.success = '';
+    state.errors = err.response.data.errors;
   },
   [SET_TOKEN]: (state, token) => {
     state.status = 'success';

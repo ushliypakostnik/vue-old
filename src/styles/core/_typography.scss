@@ -12,7 +12,7 @@ $normal-letter-spacing: normal;
 // Guide
 
 $font-size_base: 16px;
-$font-size_coefficient_large: 2;
+$font-size_coefficient_large: 1.75;
 $font-size_coefficient_normal: 1.15;
 $font-size_coefficient_small: 0.9;
 $font-size_coefficient_xsmall: 0.8;
@@ -83,6 +83,10 @@ p {
 
 h1 {
   @include text($font-family_sans, $font-size_large, $font-weight_sans_light);
+
+  @include xs {
+    @include text($font-family_sans, $font-size_normal, $font-weight_sans_light);
+  }
 }
 
 h2 {
