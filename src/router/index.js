@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
-import Home from '@/components/Home';
-import Password from '@/components/Password';
+import Home from '@/components/Router/Home';
+import Password from '@/components/Router/Password';
 
 Vue.use(Router);
 

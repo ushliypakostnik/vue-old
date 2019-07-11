@@ -60,11 +60,11 @@ import { mapGetters } from 'vuex';
 import { validationMixin } from 'vuelidate';
 import { required, minLength } from 'vuelidate/lib/validators';
 
+import Logo from '../Entry/Logo';
+
 /* import {
   SET_TOKEN,
 } from '../store/actions/auth'; */
-
-import Logo from './Logo';
 
 export default {
   name: 'Login',
@@ -158,7 +158,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/_stylebase.scss';
+@import '../../styles/_stylebase.scss';
 
 .password {
   &__header {

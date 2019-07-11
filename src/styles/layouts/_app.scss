@@ -20,27 +20,16 @@
   }
 }
 
-// Vuetify
+.wrapper {
+  position: relative;
+  height: 28px;
 
-button.v-btn {
-  width: 100%;
-  margin: $size 0 0 0;
-}
-
-.theme--dark {
-  &.application {
-    background: $color_background_dark-theme;
-  }
-
-  &.v-card,
-  &.v-list {
-    background: $color_background_dark-theme;
-    border-color: $color_background_dark-theme;
-  }
-}
-
-.v-input[class*="message"] {
-  .v-input__slot {
-    display: none;
+  &__message {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding-top: 8px;
+    text-align: center;
   }
 }

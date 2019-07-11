@@ -5,7 +5,7 @@
       <Account />
     </div>
     <div v-if="!isAuthenticated && authStatus !== 'loading'">
-      <Login />
+      <Entry />
     </div>
   </div>
 </template>
@@ -13,16 +13,16 @@
 <script>
 import { mapGetters } from 'vuex';
 
-import Loading from './Loading';
-import Login from './Login';
-import Account from './Account';
+import Loading from '../Utils/Loading';
+import Entry from '../Entry/Entry';
+import Account from '../Account/Account';
 
 export default {
   name: 'Home',
 
   components: {
     Loading,
-    Login,
+    Entry,
     Account,
   },
 

@@ -17,7 +17,7 @@ import storage from '../../storage';
 const state = {
   status: '',
   token: localStorage.getItem('user-token') || '',
-  errors: '',
+  error: '',
   success: '',
 };
 
@@ -25,7 +25,7 @@ const state = {
 const getters = {
   isAuthenticated: state => !!state.token,
   authStatus: state => state.status,
-  errors: state => state.errors,
+  error: state => state.error,
   success: state => state.success,
 };
 /* eslint-enable no-shadow */
@@ -68,7 +68,6 @@ const actions = {
   // eslint-disable-next-line arrow-body-style
   [REMIND_PASSWORD]: ({ commit, dispatch }, email) => {
     return new Promise((resolve, reject) => {
-      console.log(email);
       api.postRemindPassword(email)
         .then((response) => {
           commit(REMIND_PASSWORD_SUCCESS, response);
@@ -90,28 +89,28 @@ const actions = {
 const mutations = {
   [AUTH_REQUEST]: (state) => {
     state.status = 'loading';
-    state.errors = '';
+    state.error = '';
   },
   [AUTH_SUCCESS]: (state, response) => {
     state.status = 'success';
     state.token = response.data.user.token;
-    state.errors = '';
+    state.error = '';
   },
   [AUTH_ERROR]: (state, err) => {
     state.status = 'error';
-    state.errors = err.response.data.errors;
+    state.error = err.response.data.error;
   },
   [AUTH_LOGOUT]: (state) => {
     state.token = '';
-    state.errors = '';
+    state.error = '';
   },
   [REMIND_PASSWORD_SUCCESS]: (state, response) => {
-    state.errors = '';
-    state.success = response.data.success.message;
+    state.error = '';
+    state.success = response.data.success;
   },
   [REMIND_PASSWORD_ERROR]: (state, err) => {
     state.success = '';
-    state.errors = err.response.data.errors;
+    state.error = err.response.data.error;
   },
   [SET_TOKEN]: (state, token) => {
     state.status = 'success';

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img src="../assets/logo.png" width="70px">
+    <img src="../../assets/logo.png" width="70px">
     <h1>Vue cli based frontend boilerplate</h1>
   </div>
 </template>
@@ -12,7 +12,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import '../styles/_stylebase.scss';
+@import '../../styles/_stylebase.scss';
 
 h1 {
   color: $color_white;

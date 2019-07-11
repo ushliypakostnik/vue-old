@@ -7,11 +7,11 @@
 </template>
 
 <script>
-import { AUTH_LOGOUT } from '../store/actions/auth';
+import { AUTH_LOGOUT } from '../../store/actions/auth';
 import {
   USER_REQUEST,
   SEND_VERIFY_EMAIL,
-} from '../store/actions/user';
+} from '../../store/actions/user';
 
 export default {
   name: 'Account',
