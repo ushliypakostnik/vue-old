@@ -1,8 +1,9 @@
 // Vuetify
 
-button.v-btn {
-  width: 100%;
-  margin: $size 0 0 0;
+.v-input[class*="message"] {
+  .v-input__slot {
+    display: none;
+  }
 }
 
 .theme--dark {
@@ -15,10 +16,8 @@ button.v-btn {
     background: $color_background_dark-theme;
     border-color: $color_background_dark-theme;
   }
-}
 
-.v-input[class*="message"] {
-  .v-input__slot {
-    display: none;
+  &.v-navigation-drawer {
+    background: $color_background_dark-theme;
   }
 }

@@ -1,20 +1,22 @@
 <template>
-  <div>
-    <Logo />
-    <Login
-      v-if="login"
-      :email.sync="email"
-    />
-    <Remind
-      v-else
-      :email.sync="email"
-    />
+  <div class="entry">
+    <v-container>
+      <Logo />
+      <Login
+        v-if="login"
+        :email.sync="email"
+      />
+      <Remind
+        v-else
+        :email.sync="email"
+      />
 
-    <a
-      href="#"
-      class="switch"
-      @click.prevent="usercase"
-    >{{ login ? "Remind Рassword ?" : "Login / Registration" }}</a>
+      <a
+        href="#"
+        class="switch"
+        @click.prevent="usercase"
+      >{{ login ? "Remind Рassword ?" : "Login / Registration" }}</a>
+    </v-container>
   </div>
 </template>
 

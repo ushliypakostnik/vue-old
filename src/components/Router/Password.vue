@@ -1,58 +1,60 @@
 <template>
   <div class="password">
-    <Logo />
-    <form @submit.prevent="submit">
-      <v-text-field
-        v-model="password1"
-        :error-messages="password1Errors"
-        :append-icon="show ? 'visibility' : 'visibility_off'"
-        :type="show ? 'text' : 'password'"
-        label="Password"
-        ref="p1"
-        required
-        loading
-        @click:append="show = !show"
-      >
-        <template v-slot:progress>
-          <v-progress-linear
-            :password="progress1"
-            :color="color1"
-            height="7"
-          ></v-progress-linear>
-        </template>
-      </v-text-field>
-      <v-text-field
-        v-model="password2"
-        :error-messages="password2Errors"
-        :append-icon="show ? 'visibility' : 'visibility_off'"
-        :type="show ? 'text' : 'password'"
-        label="Password again"
-        ref="p2"
-        required
-        loading
-        @click:append="show = !show"
-      >
-        <template v-slot:progress>
-          <v-progress-linear
-            :password="progress2"
-            :color="color2"
-            height="7"
-          ></v-progress-linear>
-        </template>
-      </v-text-field>
-
-      <v-btn large type="submit">Set password</v-btn>
-
-      <div class="wrapper">
+    <v-container>
+      <Logo />
+      <form @submit.prevent="submit">
         <v-text-field
-          class="wrapper__message"
-          :error-messages="message"
-          height="0"
-          disabled
-          error
-        ></v-text-field>
-      </div>
-    </form>
+          v-model="password1"
+          :error-messages="password1Errors"
+          :append-icon="show ? 'visibility' : 'visibility_off'"
+          :type="show ? 'text' : 'password'"
+          label="Password"
+          ref="p1"
+          required
+          loading
+          @click:append="show = !show"
+        >
+          <template v-slot:progress>
+            <v-progress-linear
+              :password="progress1"
+              :color="color1"
+              height="7"
+            ></v-progress-linear>
+          </template>
+        </v-text-field>
+        <v-text-field
+          v-model="password2"
+          :error-messages="password2Errors"
+          :append-icon="show ? 'visibility' : 'visibility_off'"
+          :type="show ? 'text' : 'password'"
+          label="Password again"
+          ref="p2"
+          required
+          loading
+          @click:append="show = !show"
+        >
+          <template v-slot:progress>
+            <v-progress-linear
+              :password="progress2"
+              :color="color2"
+              height="7"
+            ></v-progress-linear>
+          </template>
+        </v-text-field>
+
+        <v-btn large type="submit">Set password</v-btn>
+
+        <div class="wrapper">
+          <v-text-field
+            class="wrapper__message"
+            :error-messages="message"
+            height="0"
+            disabled
+            error
+          ></v-text-field>
+        </div>
+      </form>
+    </v-container>
   </div>
 </template>
 

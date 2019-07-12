@@ -1,8 +1,6 @@
 <template>
-  <v-app dark id="app" class="app">
-    <v-container>
-      <router-view/>
-    </v-container>
+  <v-app dark id="app">
+    <router-view/>
   </v-app>
 </template>
 
