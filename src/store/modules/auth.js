@@ -4,11 +4,8 @@ import {
   AUTH_ERROR,
   AUTH_SUCCESS,
   AUTH_LOGOUT,
-  SET_TOKEN,
-  REMIND_PASSWORD,
-  REMIND_PASSWORD_SUCCESS,
-  REMIND_PASSWORD_ERROR,
 } from '../actions/auth';
+// eslint-disable-next-line no-unused-vars
 import { USER_REQUEST } from '../actions/user';
 
 import api from '../../api';
@@ -18,7 +15,6 @@ const state = {
   status: '',
   token: localStorage.getItem('user-token') || '',
   error: '',
-  success: '',
 };
 
 /* eslint-disable no-shadow */
@@ -26,7 +22,6 @@ const getters = {
   isAuthenticated: state => !!state.token,
   authStatus: state => state.status,
   error: state => state.error,
-  success: state => state.success,
 };
 /* eslint-enable no-shadow */
 
@@ -39,8 +34,8 @@ const actions = {
         .then((response) => {
           const token = response.data.user.token;
           storage.setAuth(token);
-          commit(AUTH_SUCCESS, response);
-          dispatch(USER_REQUEST);
+          commit(AUTH_SUCCESS, token);
+          dispatch('user/USER_REQUEST', null, { root: true });
           resolve(response);
         })
         .catch((err) => {
@@ -65,24 +60,6 @@ const actions = {
         });
     });
   },
-  // eslint-disable-next-line arrow-body-style
-  [REMIND_PASSWORD]: ({ commit, dispatch }, email) => {
-    return new Promise((resolve, reject) => {
-      api.postRemindPassword(email)
-        .then((response) => {
-          commit(REMIND_PASSWORD_SUCCESS, response);
-          resolve(response);
-        })
-        .catch((err) => {
-          commit(REMIND_PASSWORD_ERROR, err);
-          reject(err);
-        });
-    });
-  },
-  [SET_TOKEN]: ({ commit }, token) => {
-    commit(SET_TOKEN, token);
-    storage.setAuth(token);
-  },
 };
 
 /* eslint-disable no-shadow */
@@ -91,9 +68,9 @@ const mutations = {
     state.status = 'loading';
     state.error = '';
   },
-  [AUTH_SUCCESS]: (state, response) => {
+  [AUTH_SUCCESS]: (state, token) => {
     state.status = 'success';
-    state.token = response.data.user.token;
+    state.token = token;
     state.error = '';
   },
   [AUTH_ERROR]: (state, err) => {
@@ -104,22 +81,11 @@ const mutations = {
     state.token = '';
     state.error = '';
   },
-  [REMIND_PASSWORD_SUCCESS]: (state, response) => {
-    state.error = '';
-    state.success = response.data.success;
-  },
-  [REMIND_PASSWORD_ERROR]: (state, err) => {
-    state.success = '';
-    state.error = err.response.data.error;
-  },
-  [SET_TOKEN]: (state, token) => {
-    state.status = 'success';
-    state.token = token;
-  },
 };
 /* eslint-enable no-shadow */
 
 export default {
+  namespaced: true,
   state,
   getters,
   actions,

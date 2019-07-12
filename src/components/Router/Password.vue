@@ -12,7 +12,6 @@
         required
         loading
         @click:append="show = !show"
-        @input="clear"
       >
         <template v-slot:progress>
           <v-progress-linear
@@ -32,7 +31,6 @@
         required
         loading
         @click:append="show = !show"
-        @input="clear"
       >
         <template v-slot:progress>
           <v-progress-linear
@@ -44,27 +42,28 @@
       </v-text-field>
 
       <v-btn large type="submit">Set password</v-btn>
-      <v-text-field
-        class="message"
-        :error-messages="match"
-        height="0"
-        disabled
-        error
-      ></v-text-field>
+
+      <div class="wrapper">
+        <v-text-field
+          class="wrapper__message"
+          :error-messages="match"
+          height="0"
+          disabled
+          error
+        ></v-text-field>
+      </div>
     </form>
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
 import { validationMixin } from 'vuelidate';
 import { required, minLength } from 'vuelidate/lib/validators';
 
-import Logo from '../Entry/Logo';
+// eslint-disable-next-line no-unused-vars
+import { SET_NEW_PASSWORD } from '../../store/actions/pass';
 
-/* import {
-  SET_TOKEN,
-} from '../store/actions/auth'; */
+import Logo from '../Entry/Logo';
 
 export default {
   name: 'Login',
@@ -84,25 +83,10 @@ export default {
     password1: '',
     password2: '',
     show: false,
-    match: null,
+    match: '',
   }),
 
-  /* beforeCreate() {
-    // console.log('Старт!', this.$route.params.query);
-    if (this.$route.hash) {
-      console.log(this.$route.hash.slice(0, 7));
-      if (this.$route.hash.slice(0, 7) === '#token=') {
-        console.log("Да!");
-        const token = this.$route.hash.slice(7);
-        console.log(token);
-        this.$store.dispatch(SET_TOKEN, token);
-        this.$router.replace({ name: 'Home'});
-      }
-    }
-  }, */
-
   computed: {
-    ...mapGetters(['errors']),
 
     password1Errors() {
       const err = [];
@@ -142,32 +126,20 @@ export default {
       const p2 = this.$refs.p2.value;
       // eslint-disable-next-line
       if (!!!(this.password1Errors + this.password2Errors)) {
-        if (p1 === p2) {
-          // this.$store.dispatch(ACTION, {});
-        } else {
+        if (p1 !== p2) {
           this.match = 'Passwords do not match';
+        } else {
+          const query = this.$route.hash;
+          const id = query.split('&')[0].slice(4);
+          const token = query.split('&')[1].slice(6);
+          this.$store.dispatch('pass/SET_NEW_PASSWORD', token);
+          this.$router.replace({ name: 'Home' });
         }
       }
-    },
-
-    clear() {
-      this.match = null;
     },
   },
 };
 </script>
 
 <style lang="scss" scoped>
-@import '../../styles/_stylebase.scss';
-
-.password {
-  &__header {
-    font-size: 28px;
-    color: $color_white;
-
-    @include xs {
-      font-size: 24px;
-    }
-  }
-}
 </style>

@@ -1,6 +1,5 @@
 <template>
   <div>
-    Auth: {{ this.$store.state.auth }}
     <Logo />
     <Login
       v-if="login"
@@ -20,8 +19,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
-
 import Logo from './Logo';
 import Login from './Login';
 import Remind from './Remind';
@@ -40,19 +37,9 @@ export default {
     email: '',
   }),
 
-  computed: {
-    ...mapState({
-      success: state => state.auth.success
-    }),
-    /* ...mapState('auth', { // namespaced: true in module auth
-      success: state => state.success
-    }), */
-  },
-
   methods: {
     usercase() {
       this.login = !this.login;
-      console.log(this.success.message);
     },
   },
 };

@@ -11,11 +11,13 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { createNamespacedHelpers } from 'vuex';
 
 import Loading from '../Utils/Loading';
 import Entry from '../Entry/Entry';
 import Account from '../Account/Account';
+
+const { mapGetters } = createNamespacedHelpers('auth');
 
 export default {
   name: 'Home',
@@ -27,7 +29,10 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isAuthenticated', 'authStatus']),
+    ...mapGetters({
+      isAuthenticated: 'isAuthenticated',
+      authStatus: 'authStatus',
+    }),
 
     loading() {
       return this.authStatus === 'loading' && !this.isAuthenticated;

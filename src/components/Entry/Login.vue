@@ -45,19 +45,19 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { createNamespacedHelpers } from 'vuex';
 
 import { validationMixin } from 'vuelidate';
 import {
   required,
   email,
-  minLength
+  minLength,
 } from 'vuelidate/lib/validators';
 
-import {
-  AUTH_REQUEST,
-  REMIND_PASSWORD,
-} from '../../store/actions/auth';
+// eslint-disable-next-line no-unused-vars
+import { AUTH_REQUEST } from '../../store/actions/auth';
+
+const { mapGetters } = createNamespacedHelpers('auth');
 
 export default {
   name: 'Login',
@@ -82,15 +82,17 @@ export default {
   }),
 
   computed: {
-    ...mapGetters(['error']),
+    ...mapGetters({
+      error: 'error',
+    }),
 
     usermail: {
-      get: function(){
+      get() {
         return this.email;
       },
-      set: function(newValue){
-        this.$emit('update:email', newValue);
-      }
+      set(value) {
+        this.$emit('update:email', value);
+      },
     },
 
     emailErrors() {
@@ -124,7 +126,7 @@ export default {
       const password = this.$refs.passwordref.value;
       // eslint-disable-next-line
       !!!(this.emailErrors + this.passwordErrors) &&
-        this.$store.dispatch(AUTH_REQUEST, { usermail, password });
+        this.$store.dispatch('auth/AUTH_REQUEST', { usermail, password });
     },
   },
 };

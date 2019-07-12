@@ -7,25 +7,25 @@
 </template>
 
 <script>
-import { AUTH_LOGOUT } from '../../store/actions/auth';
+import { AUTH_LOGOUT } from '../../store/actions/auth'; // eslint-disable-line no-unused-vars
 import {
-  USER_REQUEST,
-  SEND_VERIFY_EMAIL,
+  USER_REQUEST, // eslint-disable-line no-unused-vars
+  SEND_VERIFY_EMAIL, // eslint-disable-line no-unused-vars
 } from '../../store/actions/user';
 
 export default {
   name: 'Account',
 
   beforeCreate() {
-    this.$store.dispatch(USER_REQUEST);
+    this.$store.dispatch('user/USER_REQUEST');
   },
 
   methods: {
     logout() {
-      this.$store.dispatch(AUTH_LOGOUT);
+      this.$store.dispatch('auth/AUTH_LOGOUT');
     },
     send() {
-      this.$store.dispatch(SEND_VERIFY_EMAIL);
+      this.$store.dispatch('user/SEND_VERIFY_EMAIL');
     },
   },
 };

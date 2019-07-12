@@ -11,7 +11,10 @@ import { AUTH_LOGOUT } from '../actions/auth';
 import api from '../../api';
 import storage from '../../storage';
 
-const state = { status: '', profile: {} };
+const state = {
+  status: '',
+  profile: {},
+};
 
 /* eslint-disable no-shadow */
 const getters = {
@@ -32,7 +35,7 @@ const actions = {
       .catch(() => {
         commit(USER_ERROR);
         // if resp is unauthorized, logout, to
-        dispatch(AUTH_LOGOUT);
+        dispatch('auth/AUTH_LOGOUT', null, { root: true });
       });
   },
   [SEND_VERIFY_EMAIL]: () => {
@@ -69,6 +72,7 @@ const mutations = {
 /* eslint-enable no-shadow */
 
 export default {
+  namespaced: true,
   state,
   getters,
   actions,

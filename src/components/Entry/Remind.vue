@@ -34,19 +34,19 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { createNamespacedHelpers } from 'vuex';
 
 import { validationMixin } from 'vuelidate';
 import {
   required,
   email,
-  minLength
+  minLength,
 } from 'vuelidate/lib/validators';
 
-import {
-  AUTH_REQUEST,
-  REMIND_PASSWORD,
-} from '../../store/actions/auth';
+// eslint-disable-next-line no-unused-vars
+import { REMIND_PASSWORD } from '../../store/actions/pass';
+
+const { mapGetters } = createNamespacedHelpers('pass');
 
 export default {
   name: 'Login',
@@ -69,15 +69,18 @@ export default {
   }),
 
   computed: {
-    ...mapGetters(['error', 'success']),
+    ...mapGetters({
+      error: 'error',
+      success: 'success',
+    }),
 
     usermail: {
-      get: function(){
+      get() {
         return this.email;
       },
-      set: function(newValue){
-        this.$emit('update:email', newValue);
-      }
+      set(value) {
+        this.$emit('update:email', value);
+      },
     },
 
     emailErrors() {
@@ -94,7 +97,7 @@ export default {
       this.$v.$touch();
       const usermail = this.$refs.usermailref.value;
       // eslint-disable-next-line
-      this.emailErrors.length === 0 && this.$store.dispatch(REMIND_PASSWORD, usermail);
+      this.emailErrors.length === 0 && this.$store.dispatch('pass/REMIND_PASSWORD', usermail);
     },
   },
 };
