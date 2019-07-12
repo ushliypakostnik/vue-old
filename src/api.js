@@ -9,25 +9,22 @@ export default ({
   postAuth: user =>
     axios.post(`${API_URL}/api/user/login`, { user }),
 
-  getVerifyEmail: (usermail, token) =>
-    axios.get(`${API_URL}/api/user/send-verify-email`, {
-      headers: { Authorization: `Token ${token}` },
-    }),
-
-  getLogout: token =>
-    axios.get(`${API_URL}/api/user/logout`, {
-      headers: { Authorization: `Token ${token}` },
-    }),
+  postVerifyEmail: usermail =>
+    axios.post(`${API_URL}/api/user/send-verify-email`, { usermail }),
 
   postRemindPassword: usermail =>
     axios.post(`${API_URL}/api/user/remind`, { usermail }),
 
+  postNewPassword: user =>
+    axios.post(`${API_URL}/api/user/password`, { user }),
+
+  getLogout: () =>
+    axios.get(`${API_URL}/api/user/logout`),
+
   // User
 
-  getUserProfile: token =>
-    axios.get(`${API_URL}/api/user/profile`, {
-      headers: { Authorization: `Token ${token}` },
-    }),
+  getUserProfile: () =>
+    axios.get(`${API_URL}/api/user/profile`),
 
   // Test
 

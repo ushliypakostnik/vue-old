@@ -46,7 +46,7 @@
       <div class="wrapper">
         <v-text-field
           class="wrapper__message"
-          :error-messages="match"
+          :error-messages="message"
           height="0"
           disabled
           error
@@ -57,6 +57,8 @@
 </template>
 
 <script>
+import { createNamespacedHelpers } from 'vuex';
+
 import { validationMixin } from 'vuelidate';
 import { required, minLength } from 'vuelidate/lib/validators';
 
@@ -64,6 +66,8 @@ import { required, minLength } from 'vuelidate/lib/validators';
 import { SET_NEW_PASSWORD } from '../../store/actions/pass';
 
 import Logo from '../Entry/Logo';
+
+const { mapGetters } = createNamespacedHelpers('pass');
 
 export default {
   name: 'Login',
@@ -84,9 +88,13 @@ export default {
     password2: '',
     show: false,
     match: '',
+    submitOk: false,
   }),
 
   computed: {
+    ...mapGetters({
+      error: 'error2',
+    }),
 
     password1Errors() {
       const err = [];
@@ -116,24 +124,32 @@ export default {
     color2() {
       return ['error', 'warning', 'success'][Math.floor(this.progress2 / 30)];
     },
+
+    message() {
+      if (this.error && this.submitOk) {
+        return this.error.message;
+      }
+      return this.match;
+    },
   },
 
   methods: {
     submit() {
       this.$v.$touch();
 
-      const p1 = this.$refs.p1.value;
-      const p2 = this.$refs.p2.value;
+      const password = this.$refs.p1.value;
+      const password2 = this.$refs.p2.value;
       // eslint-disable-next-line
       if (!!!(this.password1Errors + this.password2Errors)) {
-        if (p1 !== p2) {
+        if (password !== password2) {
+          this.submitOk = false;
           this.match = 'Passwords do not match';
         } else {
+          this.submitOk = true;
           const query = this.$route.hash;
           const id = query.split('&')[0].slice(4);
           const token = query.split('&')[1].slice(6);
-          this.$store.dispatch('pass/SET_NEW_PASSWORD', token);
-          this.$router.replace({ name: 'Home' });
+          this.$store.dispatch('pass/SET_PASSWORD', { id, password, token });
         }
       }
     },

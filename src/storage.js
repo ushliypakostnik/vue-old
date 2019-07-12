@@ -3,7 +3,8 @@ import axios from 'axios';
 // Auto auth
 const t = localStorage.getItem('user-token');
 if (t) {
-  axios.defaults.headers.common['Authorization'] = t; // eslint-disable-line
+  // eslint-disable-next-line dot-notation
+  axios.defaults.headers.common['Authorization'] = `Token ${t}`;
 }
 
 export default ({
@@ -13,7 +14,7 @@ export default ({
   setAuth: (token) => {
     localStorage.setItem('user-token', token);
     // eslint-disable-next-line dot-notation
-    axios.defaults.headers.common['Authorization'] = token;
+    axios.defaults.headers.common['Authorization'] = `Token ${token}`;
   },
 
   deleteAuth: () => {
@@ -28,11 +29,13 @@ export default ({
     localStorage.setItem('user-id', responce.data.user.id);
     localStorage.setItem('user-mail', responce.data.user.usermail);
     localStorage.setItem('user-name', responce.data.user.username);
+    localStorage.setItem('user-verify', responce.data.user.isVerify);
   },
 
   deleteUserProfile: () => {
     localStorage.removeItem('user-id');
     localStorage.removeItem('user-mail');
     localStorage.removeItem('user-name');
+    localStorage.removeItem('user-verify');
   },
 });

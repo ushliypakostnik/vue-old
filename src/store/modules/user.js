@@ -42,7 +42,7 @@ const actions = {
     const usermail = localStorage.getItem('user-mail');
     const token = localStorage.getItem('user-token');
     return new Promise((resolve, reject) => {
-      api.getVerifyEmail(usermail, token)
+      api.postVerifyEmail(usermail, token)
         .then((response) => {
           resolve(response);
         })

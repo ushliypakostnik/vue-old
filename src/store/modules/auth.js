@@ -45,14 +45,14 @@ const actions = {
         });
     });
   },
+  // eslint-disable-next-line arrow-body-style
   [AUTH_LOGOUT]: ({ commit }) => {
-    const token = state.token;
     return new Promise((resolve, reject) => {
       commit(AUTH_LOGOUT);
-      storage.deleteAuth();
-      storage.deleteUserProfile();
-      api.getLogout(token)
+      api.getLogout()
         .then((response) => {
+          storage.deleteAuth();
+          storage.deleteUserProfile();
           resolve(response);
         })
         .catch((err) => {
