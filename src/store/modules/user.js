@@ -5,6 +5,8 @@ import {
   USER_ERROR,
   USER_SUCCESS,
   SEND_VERIFY_EMAIL,
+  SEND_VERIFY_EMAIL_SUCCESS,
+  SEND_VERIFY_EMAIL_ERROR,
 } from '../actions/user';
 import { AUTH_LOGOUT } from '../actions/auth';
 
@@ -14,20 +16,21 @@ import storage from '../../storage';
 const state = {
   status: '',
   profile: {},
+  email: '',
 };
 
 /* eslint-disable no-shadow */
 const getters = {
   getProfile: state => state.profile,
   isProfileLoaded: state => !!state.profile.name,
+  email: state => state.email,
 };
 /* eslint-enable no-shadow */
 
 const actions = {
   [USER_REQUEST]: ({ commit, dispatch }) => {
-    const token = localStorage.getItem('user-token');
     commit(USER_REQUEST);
-    api.getUserProfile(token)
+    api.getUserProfile()
       .then((responce) => {
         commit(USER_SUCCESS, responce);
         storage.setUserProfile(responce);
@@ -38,15 +41,16 @@ const actions = {
         dispatch('auth/AUTH_LOGOUT', null, { root: true });
       });
   },
-  [SEND_VERIFY_EMAIL]: () => {
+  [SEND_VERIFY_EMAIL]: ({ commit }) => {
     const usermail = localStorage.getItem('user-mail');
-    const token = localStorage.getItem('user-token');
     return new Promise((resolve, reject) => {
-      api.postVerifyEmail(usermail, token)
+      api.postVerifyEmail(usermail)
         .then((response) => {
+          commit(SEND_VERIFY_EMAIL_SUCCESS);
           resolve(response);
         })
         .catch((err) => {
+          commit(SEND_VERIFY_EMAIL_ERROR);
           reject(err);
         });
     });
@@ -60,13 +64,16 @@ const mutations = {
   },
   [USER_SUCCESS]: (state, responce) => {
     state.status = 'success';
-    Vue.set(state, 'profile', responce);
+    Vue.set(state, 'profile', responce.data.user);
   },
   [USER_ERROR]: (state) => {
     state.status = 'error';
   },
   [AUTH_LOGOUT]: (state) => {
     state.profile = {};
+  },
+  [SEND_VERIFY_EMAIL_SUCCESS]: (state) => {
+    state.email = 'success';
   },
 };
 /* eslint-enable no-shadow */

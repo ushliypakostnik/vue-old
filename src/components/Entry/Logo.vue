@@ -18,5 +18,6 @@ h1 {
   color: $color_white;
   margin-top: $size / 2;
   margin-bottom: $size;
+  @include text($font-family_sans, $font-size_normal, $font-weight_sans_bold);
 }
 </style>

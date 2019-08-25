@@ -46,6 +46,8 @@ import {
 // eslint-disable-next-line no-unused-vars
 import { REMIND_PASSWORD } from '../../store/actions/pass';
 
+import { UTILS, MESSAGES } from '../../constants';
+
 const { mapGetters } = createNamespacedHelpers('pass');
 
 export default {
@@ -58,7 +60,7 @@ export default {
 
   validations: {
     email: { required, email },
-    password: { required, minLength: minLength(6) },
+    password: { required, minLength: minLength(UTILS.min_password_lenght) },
   },
 
   props: {
@@ -86,8 +88,8 @@ export default {
     emailErrors() {
       const err = [];
       if (!this.$v.email.$dirty) return err;
-      !this.$v.email.email && err.push('Must be valid e-mail'); // eslint-disable-line
-      !this.$v.email.required && err.push('E-mail is required'); // eslint-disable-line
+      !this.$v.email.email && err.push(MESSAGES.email_must_be_valid); // eslint-disable-line
+      !this.$v.email.required && err.push(MESSAGES.email_required); // eslint-disable-line
       return err;
     },
   },
