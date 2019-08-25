@@ -65,14 +65,16 @@ import { validationMixin } from 'vuelidate';
 import { required, minLength } from 'vuelidate/lib/validators';
 
 // eslint-disable-next-line no-unused-vars
-import { SET_NEW_PASSWORD } from '../../store/actions/pass';
+import { SET_PASSWORD } from '../../store/actions/pass';
+
+import { UTILS, MESSAGES } from '../../constants';
 
 import Logo from '../Entry/Logo';
 
 const { mapGetters } = createNamespacedHelpers('pass');
 
 export default {
-  name: 'Login',
+  name: 'Password',
 
   components: {
     Logo,
@@ -81,8 +83,8 @@ export default {
   mixins: [validationMixin],
 
   validations: {
-    password1: { required, minLength: minLength(6) },
-    password2: { required, minLength: minLength(6) },
+    password1: { required, minLength: minLength(UTILS.min_password_lenght) },
+    password2: { required, minLength: minLength(UTILS.min_password_lenght) },
   },
 
   data: () => ({
@@ -101,16 +103,16 @@ export default {
     password1Errors() {
       const err = [];
       if (!this.$v.password1.$dirty) return err;
-      !this.$v.password1.required && err.push('Password is required'); // eslint-disable-line
-      !this.$v.password1.minLength && err.push('Password must be more than 5 characters'); // eslint-disable-line
+      !this.$v.password1.required && err.push(MESSAGES.password_required); // eslint-disable-line
+      !this.$v.password1.minLength && err.push(MESSAGES.password_min_lenght); // eslint-disable-line
       return err;
     },
 
     password2Errors() {
       const err = [];
       if (!this.$v.password2.$dirty) return err;
-      !this.$v.password2.required && err.push('Password is required'); // eslint-disable-line
-      !this.$v.password2.minLength && err.push('Password must be more than 5 characters'); // eslint-disable-line
+      !this.$v.password2.required && err.push(MESSAGES.password_required); // eslint-disable-line
+      !this.$v.password2.minLength && err.push(MESSAGES.password_min_lenght); // eslint-disable-line
       return err;
     },
 
@@ -145,7 +147,7 @@ export default {
       if (!!!(this.password1Errors + this.password2Errors)) {
         if (password !== password2) {
           this.submitOk = false;
-          this.match = 'Passwords do not match';
+          this.match = MESSAGES.password_do_not_match;
         } else {
           this.submitOk = true;
           const query = this.$route.hash;

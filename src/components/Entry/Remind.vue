@@ -51,7 +51,7 @@ import { UTILS, MESSAGES } from '../../constants';
 const { mapGetters } = createNamespacedHelpers('pass');
 
 export default {
-  name: 'Login',
+  name: 'Remind',
 
   components: {
   },
