@@ -50,6 +50,19 @@ export default {
 <style lang="scss" scoped>
 @import '../../styles/_stylebase.scss';
 
+.entry {
+  height: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  .container {
+    position: relative;
+    top: -7vh;
+    height: 530px;
+  }
+}
+
 .switch {
   display: inline-block;
   margin-top: $size / 4;
